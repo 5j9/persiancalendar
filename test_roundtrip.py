@@ -19,13 +19,13 @@ def test_roundtrip_astronomical():
 def test_roundtrip_fast():
     """Test that the fast algorithm roundtrips correctly."""
     start = persiancalendar_fast.fixed_from_persian_fast(
-        (ROUNDTRIP_START_YEAR, 1, 1))
+        ROUNDTRIP_START_YEAR, 1, 1)
     end = persiancalendar_fast.fixed_from_persian_fast(
-        (ROUNDTRIP_END_YEAR, 1, 1))
+        ROUNDTRIP_END_YEAR, 1, 1)
 
     for date in range(start, end):
-        p_date = persiancalendar_fast.persian_fast_from_fixed(date)
-        converted_back = persiancalendar_fast.fixed_from_persian_fast(p_date)
+        p_date = persiancalendar_fast.persian_fast_from_ordinal(date)
+        converted_back = persiancalendar_fast.fixed_from_persian_fast(*p_date)
         assert (date == converted_back)
 
 
@@ -37,7 +37,7 @@ def test_fast():
         (persiancalendar_fast.SUPPORTED_LAST_YEAR + 1, 1, 1))
 
     for date in range(start, end):
-        fast_p_date = persiancalendar_fast.persian_fast_from_fixed(date)
+        fast_p_date = persiancalendar_fast.persian_fast_from_ordinal(date)
         astro_p_date = persiancalendar.persian_from_fixed(date)
         assert (fast_p_date == astro_p_date)
 
