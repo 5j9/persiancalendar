@@ -27,7 +27,7 @@
 # Sample values for the functions (useful for debugging) are given in
 # Appendix C of the book.
 
-import math
+from math import ceil
 
 PERSIAN_EPOCH = 226896  # Precalculated result from Calendarical Calculations
 
@@ -80,9 +80,9 @@ def persian_fast_from_fixed(date):
         year += 1
         day_of_year = 1
     if day_of_year <= 186:
-        month = math.ceil(day_of_year / 31)
+        month = ceil(day_of_year / 31)
     else:
-        month = math.ceil((day_of_year - 6) / 30)
+        month = ceil((day_of_year - 6) / 30)
     # Calculate the day by subtraction
     day = date - fixed_from_persian_fast((year, month, 1)) + 1
     return (year, month, day)
