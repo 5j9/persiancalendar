@@ -71,7 +71,7 @@ def ordinal_from_persian_fast(year, month, day):
 
 
 def persian_fast_from_ordinal(ordinal):
-    # 226895 == fixed_from_persian_fast((1, 1, 1))
+    # 226895 == ordinal_from_persian_fast((1, 1, 1))
     days_since_epoch = ordinal - 226895
     year = 1 + (33 * days_since_epoch + 3) // 12053
     day_of_year = ordinal - ordinal_from_persian_fast(year, 1, 1) + 1
