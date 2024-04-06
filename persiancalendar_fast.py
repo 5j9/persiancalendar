@@ -72,7 +72,8 @@ def fixed_from_persian_fast(p_date):
 
 
 def persian_fast_from_fixed(date):
-    days_since_epoch = date - fixed_from_persian_fast((1, 1, 1))
+    # 226895 == fixed_from_persian_fast((1, 1, 1))
+    days_since_epoch = date - 226895
     year = 1 + (33 * days_since_epoch + 3) // 12053
     day_of_year = date - fixed_from_persian_fast((year, 1, 1)) + 1
     if day_of_year == 366 and year in NON_LEAP_CORRECTION:
