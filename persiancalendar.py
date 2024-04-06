@@ -440,9 +440,8 @@ def persian_new_year_on_or_before(date):
     return day
 
 
-def fixed_from_persian(p_date):
+def ordinal_from_persian(year, month, day):
     """Fixed date of Astronomical Persian date p_date."""
-    year, month, day = p_date
     new_year = persian_new_year_on_or_before(
         PERSIAN_EPOCH + 180  # Fall after epoch.
         + math.floor(MEAN_TROPICAL_YEAR *
@@ -453,18 +452,18 @@ def fixed_from_persian(p_date):
             + day)  # Days so far this month.
 
 
-def persian_from_fixed(date):
+def persian_from_ordinal(date):
     """Astronomical Persian date corresponding to fixed date."""
     new_year = persian_new_year_on_or_before(date)
     y = round((new_year - PERSIAN_EPOCH) / MEAN_TROPICAL_YEAR) + 1
     year = y if 0 < y else y - 1  # No year zero
-    day_of_year = date - fixed_from_persian((year, 1, 1)) + 1
+    day_of_year = date - ordinal_from_persian(year, 1, 1) + 1
     if day_of_year <= 186:
         month = math.ceil(day_of_year / 31)
     else:
         month = math.ceil((day_of_year - 6) / 30)
     # Calculate the day by subtraction
-    day = date - fixed_from_persian((year, month, 1)) + 1
+    day = date - ordinal_from_persian(year, month, 1) + 1
     return (year, month, day)
 
 
@@ -472,13 +471,13 @@ def nowruz(g_year):
     """Fixed date of Persian New Year (Nowruz) in Gregorian year g_year."""
     persian_year = g_year - gregorian_year_from_fixed(PERSIAN_EPOCH) + 1
     y = persian_year - 1 if persian_year <= 0 else persian_year  # No Persian year 0
-    return fixed_from_persian((y, 1, 1))
+    return ordinal_from_persian(y, 1, 1)
 
 
 def persian_leap_year(p_year):
     """True if g_year is a leap year on the Persian calendar."""
-    this_nowruz = fixed_from_persian((p_year, 1, 1))
-    next_nowruz = fixed_from_persian((p_year + 1, 1, 1))
+    this_nowruz = ordinal_from_persian(p_year, 1, 1)
+    next_nowruz = ordinal_from_persian(p_year + 1, 1, 1)
     return next_nowruz - this_nowruz == 366
 
 
@@ -486,5 +485,5 @@ if __name__ == '__main__':
     import datetime
     today = datetime.date.today()
     fixed_date = fixed_from_gregorian((today.year, today.month, today.day))
-    persian_date = persian_from_fixed(fixed_date)
+    persian_date = persian_from_ordinal(fixed_date)
     print("%d/%d/%d" % persian_date)

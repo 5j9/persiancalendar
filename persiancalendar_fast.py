@@ -60,7 +60,7 @@ NON_LEAP_CORRECTION = frozenset(
     })
 
 
-def fixed_from_persian_fast(year, month, day):
+def ordinal_from_persian_fast(year, month, day):
     new_year = PERSIAN_EPOCH - 1 + 365 * (year - 1) + (8 * year + 21) // 33
     if year - 1 in NON_LEAP_CORRECTION:
         new_year -= 1
@@ -74,7 +74,7 @@ def persian_fast_from_ordinal(ordinal):
     # 226895 == fixed_from_persian_fast((1, 1, 1))
     days_since_epoch = ordinal - 226895
     year = 1 + (33 * days_since_epoch + 3) // 12053
-    day_of_year = ordinal - fixed_from_persian_fast(year, 1, 1) + 1
+    day_of_year = ordinal - ordinal_from_persian_fast(year, 1, 1) + 1
     if day_of_year == 366 and year in NON_LEAP_CORRECTION:
         year += 1
         day_of_year = 1
@@ -83,7 +83,7 @@ def persian_fast_from_ordinal(ordinal):
     else:
         month = ceil((day_of_year - 6) / 30)
     # Calculate the day by subtraction
-    day = ordinal - fixed_from_persian_fast(year, month, 1) + 1
+    day = ordinal - ordinal_from_persian_fast(year, month, 1) + 1
     return (year, month, day)
 
 

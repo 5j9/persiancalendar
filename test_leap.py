@@ -29,7 +29,7 @@ def test_leap():
             g_day = int(g_day)
             g_date = persiancalendar.fixed_from_gregorian(
                 (g_year, g_month, g_day))
-            nowruz = persiancalendar.fixed_from_persian((p_year, 1, 1))
+            nowruz = persiancalendar.ordinal_from_persian(p_year, 1, 1)
             assert (nowruz == g_date)
 
 
