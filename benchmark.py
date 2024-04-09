@@ -50,7 +50,6 @@ def g2j():
 
 
 def j2g():
-    g = date.fromordinal(start)
     assert (
         JalaliToGregorian(1300, 1, 1).getGregorianList()
         == date.fromordinal(ordinal_from_persian_fast(1300, 1, 1)).timetuple()[:3]
