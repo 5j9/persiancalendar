@@ -27,13 +27,12 @@
 # Sample values for the functions (useful for debugging) are given in
 # Appendix C of the book.
 
-from math import ceil
-
 PERSIAN_EPOCH = 226896  # Precalculated result from Calendrical Calculations
 
 SUPPORTED_FIRST_YEAR = 1178
 SUPPORTED_LAST_YEAR = 3000
 
+# fmt: off
 # All these years are not leap, while they are considered leap by the 33-year
 # rule. The year following each of them is leap, but it's considered non-leap
 # by the 33-year rule. This table has been tested to match the modified
@@ -58,20 +57,30 @@ NON_LEAP_CORRECTION = frozenset(
         2818, 2822, 2847, 2851, 2855, 2880, 2884, 2888,
         2913, 2917, 2921, 2946, 2950, 2954, 2979, 2983, 2987
     })
+# fmt: on
 
 
 def ordinal_from_persian_fast(year, month, day):
     new_year = PERSIAN_EPOCH - 1 + 365 * (year - 1) + (8 * year + 21) // 33
     if year - 1 in NON_LEAP_CORRECTION:
         new_year -= 1
-    return (new_year - 1  # Days in prior years.
-            # Days in prior months this year.
-            + (31 * (month - 1) if month <= 7 else 30 * (month - 1) + 6)
-            + day)  # Days so far this month.
+    return (
+        new_year
+        - 1  # Days in prior years.
+        # Days in prior months this year.
+        + (31 * (month - 1) if month <= 7 else 30 * (month - 1) + 6)
+        + day
+    )  # Days so far this month.
+
+
+def div_ceil(a, b):
+    """Equivalent to math.ceil(a / b), but with no floating point math and no
+    dependency on Python's math module"""
+    return -((-a) // b)
 
 
 def persian_fast_from_ordinal(ordinal):
-    # 226895 == ordinal_from_persian_fast((1, 1, 1))
+    # 226895 == ordinal_from_persian_fast(1, 1, 1)
     days_since_epoch = ordinal - 226895
     year = 1 + (33 * days_since_epoch + 3) // 12053
     day_of_year = ordinal - ordinal_from_persian_fast(year, 1, 1) + 1
@@ -79,9 +88,9 @@ def persian_fast_from_ordinal(ordinal):
         year += 1
         day_of_year = 1
     if day_of_year <= 186:
-        month = ceil(day_of_year / 31)
+        month = div_ceil(day_of_year, 31)
     else:
-        month = ceil((day_of_year - 6) / 30)
+        month = div_ceil(day_of_year - 6, 30)
     # Calculate the day by subtraction
     day = ordinal - ordinal_from_persian_fast(year, month, 1) + 1
     return (year, month, day)
